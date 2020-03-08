@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hsd.fullname" . }}
+  labels:
+    {{- include "hsd.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - port: {{ .Values.service.authoritativeNsPort }}
+      targetPort: ns
+      protocol: UDP
+      name: ns
+    - port: {{ .Values.service.recursiveNsPort }}
+      targetPort: rs
+      protocol: UDP
+      name: rs
+  selector:
+    {{- include "hsd.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "hsd.fullname" . }}
+  labels:
+    {{- include "hsd.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "hsd.selectorLabels" . | nindent 6 }}
+  serviceName: hsd
+  template:
+    metadata:
+      labels:
+        {{- include "hsd.selectorLabels" . | nindent 8 }}
+    spec:
+      hostNetwork: true
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - hsd
+            topologyKey: kubernetes.io/hostname
+      serviceAccountName: {{ include "hsd.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          command:
+          - hsd
+          - --port=12038 
+          - --http-port=12037
+          - --ns-port=5349
+          - --rs-port=5350
+          - --wallet-http-port=12039
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 12037
+              protocol: TCP
+            - name: node
+              containerPort: 12038
+              protocol: TCP
+            - name: wallet
+              containerPort: 12039
+              protocol: TCP
+            - name: ns
+              containerPort: 5349
+              protocol: UDP
+              hostPort: {{ .Values.service.authoritativeNsPort }}
+            - name: rs
+              containerPort: 5350
+              protocol: UDP
+              hostPort: {{ .Values.service.recursiveNsPort }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: chaindata
+            mountPath: /root/.hsd
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: chaindata
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 50Gi
+
