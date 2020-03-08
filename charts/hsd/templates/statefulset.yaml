@@ -39,8 +39,9 @@ spec:
           - hsd
           - --port=12038 
           - --http-port=12037
-          - --ns-port=5349
-          - --rs-port=5350
+          - --ns-port={{ .Values.service.authoritativeNsPort }}
+          - --rs-host=0.0.0.0
+          - --rs-port={{ .Values.service.recursiveNsPort }}
           - --wallet-http-port=12039
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -57,11 +58,11 @@ spec:
               containerPort: 12039
               protocol: TCP
             - name: ns
-              containerPort: 5349
+              containerPort: {{ .Values.service.authoritativeNsPort }}
               protocol: UDP
               hostPort: {{ .Values.service.authoritativeNsPort }}
             - name: rs
-              containerPort: 5350
+              containerPort: {{ .Values.service.recursiveNsPort }}
               protocol: UDP
               hostPort: {{ .Values.service.recursiveNsPort }}
           # livenessProbe:
