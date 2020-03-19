@@ -1,6 +1,6 @@
 # Handshake Helm Charts
 
-This an unofficial registry of [Handshake](https://handshake.org/) [helm](https://helm.sh/) charts.
+This is an unofficial registry of [Handshake](https://handshake.org/) [helm](https://helm.sh/) charts.
 
 ## List of Charts
 
