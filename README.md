@@ -3,7 +3,7 @@
 This is an unofficial registry of [Handshake](https://handshake.org/) [helm](https://helm.sh/) charts.
 
 ## Prerequisites
-* Helm 3+
+* [Helm](https://helm.sh/) 3+
 
 ## Setup
 
