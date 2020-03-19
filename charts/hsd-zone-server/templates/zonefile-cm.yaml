@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zonefile
+data:
+  zonefile: |
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; Zone file for TLD “.{{ .Values.zone }}"
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    $TTL    1800  ; (30 Min)
+    @       IN      SOA     {{ .Values.zone }}. hostmaster.{{ .Values.zone }}. (
+    2015091220      ; serial (timestamp)
+    10800          ; refresh (3 Hours)
+    3600           ; retry (1 Hour)
+    604800         ; expire (28 days)
+    1800 )        ; minimum (30 Min)
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; Replace the * & ns values with the server's IP
+    ; This will point all subdomains to the HTTP server on :80
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    @         IN    NS   ns.{{ .Values.zone }}.      ; NS record is required
+    ns        IN    A    {{ .Values.ip }}   ; A record to point to your NS server.
+    {{- .Values.additionalRecords | nindent 4 }}
+    @         IN    A    {{ .Values.httpIP }}   ; Point all leftover subdomains to the HTTP server on :80
+    *         IN    A    {{ .Values.httpIP }}   ; Point all leftover subdomains to the HTTP server on :80

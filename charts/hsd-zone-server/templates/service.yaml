@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hsd-zone-server.fullname" . }}
+  labels:
+    {{- include "hsd-zone-server.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: dns
+      protocol: UDP
+      name: dns
+  selector:
+    {{- include "hsd-zone-server.selectorLabels" . | nindent 4 }}
