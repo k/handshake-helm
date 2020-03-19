@@ -1,5 +1,5 @@
 owner: k
 git-repo: handshake-helm
 package-path: .deploy
-charts-repo: https://k.github.io
+charts-repo: https://k.github.io/handshake-helm
 index-path: ./index.yaml
