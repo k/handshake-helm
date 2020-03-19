@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  hsd:
+  - apiVersion: v2
+    appVersion: v2.1.2
+    created: "2020-03-19T10:46:08.184896-07:00"
+    description: Handshake Full Node and Validator Helm Chart
+    digest: ad8ea78069fccd2f4e7423189ff390c0a480a3504f833a0613366c47b1f7800f
+    name: hsd
+    urls:
+    - https://github.com/k/handshake-helm/releases/download/hsd-0.1.0/hsd-0.1.0.tgz
+    version: 0.1.0
+  hsd-zone-server:
+  - apiVersion: v2
+    appVersion: 0.3.0
+    created: "2020-03-19T10:46:08.327064-07:00"
+    description: A Zone server for a Handshake Name
+    digest: 9837742f4fad05720f5cb54f33f856029965d9abd3bb21d9c41a33e2245e5453
+    name: hsd-zone-server
+    urls:
+    - https://github.com/k/handshake-helm/releases/download/hsd-zone-server-0.1.0/hsd-zone-server-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-03-19T10:46:07.873373-07:00"
